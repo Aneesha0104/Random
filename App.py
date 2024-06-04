@@ -46,13 +46,13 @@ param_grid_nb = {'alpha': [0.01, 0.1, 1, 10]}
 
 # Initialize classifiers with hyperparameter tuning
 classifiers = {
-    'Support Vector Machine': GridSearchCV(SVC(), param_grid_svm, refit=True, verbose=2),
-    'Decision Tree': GridSearchCV(DecisionTreeClassifier(), param_grid_dt, refit=True, verbose=2),
+    # 'Support Vector Machine': GridSearchCV(SVC(), param_grid_svm, refit=True, verbose=2),
+    # 'Decision Tree': GridSearchCV(DecisionTreeClassifier(), param_grid_dt, refit=True, verbose=2),
     'Random Forest': GridSearchCV(RandomForestClassifier(), param_grid_rf, refit=True, verbose=2),
-    'Gradient Boosting Machines': GridSearchCV(GradientBoostingClassifier(), param_grid_gbm, refit=True, verbose=2),
-    'XGBoost': GridSearchCV(xgb.XGBClassifier(), param_grid_xgb, refit=True, verbose=2),
-    'CatBoost': cb.CatBoostClassifier(verbose=0),  # CatBoost has its own internal hyperparameter tuning mechanism
-    'K-Nearest Neighbors': GridSearchCV(KNeighborsClassifier(), param_grid_knn, refit=True, verbose=2),
+    # 'Gradient Boosting Machines': GridSearchCV(GradientBoostingClassifier(), param_grid_gbm, refit=True, verbose=2),
+    # 'XGBoost': GridSearchCV(xgb.XGBClassifier(), param_grid_xgb, refit=True, verbose=2),
+    # 'CatBoost': cb.CatBoostClassifier(),  # CatBoost has its own internal hyperparameter tuning mechanism
+    # 'K-Nearest Neighbors': GridSearchCV(KNeighborsClassifier(), param_grid_knn, refit=True, verbose=2),
     'Naive Bayes': GridSearchCV(MultinomialNB(), param_grid_nb, refit=True, verbose=2)
 }
 
@@ -66,8 +66,7 @@ def evaluate_classifier(name, classifier, X_train, y_train, X_test, y_test, test
 
     y_pred = classifier.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    # conf_matrix = confusion_matrix(y_test, y_pred)
-    # class_report = classification_report(y_test, y_pred)
+
 
     sentences = sent_tokenize(test_data)
     exclusion_with_countries = []
@@ -118,3 +117,4 @@ if st.button('Classify and Extract'):
             st.write("No sentences were classified as exclusion or no countries were found.")
     else:
         st.write("Please enter the text and select a classifier.")
+
