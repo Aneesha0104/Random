@@ -88,16 +88,11 @@ for key, value in results.items():
     if key.startswith("eval_"):
         print(f"{key[5:].capitalize()}: {value:.4f}")
 
-import pickle
-
-# Define the path where you want to save the model
-model_path_pickle = "bert_model.pkl"
-
 # Save the model
-with open(model_path_pickle, 'wb') as f:
-    pickle.dump(model, f)
+model.save_pretrained('./bert_model')
 
-print("Model saved successfully at:", model_path_pickle)
+# Save the tokenizer
+tokenizer.save_pretrained('./bert_tokenizer_model')
 
 # Function to classify and extract countries
 def classify_and_extract(model, sentences):
@@ -112,10 +107,20 @@ def classify_and_extract(model, sentences):
             if countries:
                 results.add((sentence, tuple(countries)))
     return results
-
+def classify_and_extract(model, sentences):
+    results = set()
+    encodings = tokenizer(sentences, truncation=True, padding=True, max_length=100, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model(**encodings)
+    predictions = torch.sigmoid(outputs.logits).numpy().flatten()
+    for sentence, prediction in zip(sentences, predictions):
+        if prediction > 0.5:
+            countries = extract_countries(sentence)
+            if countries:
+                results.add((sentence, tuple(countries)))
+    return results
 # Tokenize test data into sentences
 sentences = sent_tokenize(test_data)
-
 
 print("BERT Model Exclusion Sentences with Countries:")
 for sentence, countries in classify_and_extract(model, sentences):
